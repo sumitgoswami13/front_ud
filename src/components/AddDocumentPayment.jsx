@@ -79,11 +79,35 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
   };
 
   const handlePayment = async () => {
+    // Try to load Razorpay if not available
+    if (!window.Razorpay) {
+      console.log("Razorpay not found, attempting to load...");
+      try {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.onload = () => {
+            setRazorpayLoaded(true);
+            resolve();
+          };
+          script.onerror = () => reject(new Error("Failed to load Razorpay"));
+          document.head.appendChild(script);
+        });
+      } catch (error) {
+        console.error("Failed to load Razorpay:", error);
+        alert("Payment system could not be loaded. Please check your internet connection and try again.");
+        return;
+      }
+    }
+
     if (!window.Razorpay) {
       alert("Payment system not available. Please refresh and try again.");
       return;
     }
-    if (!calculation) return;
+    if (!calculation) {
+      alert("Calculation data missing. Please go back and try again.");
+      return;
+    }
 
     setIsProcessingPayment(true);
 
