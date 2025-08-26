@@ -21,6 +21,8 @@ const AdminUserDetail = ({ userId, onBack, onLogout }) => {
   const [isUploadingFile, setIsUploadingFile] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  const [selectedDocumentForNotes, setSelectedDocumentForNotes] = useState(null);
 
   useEffect(() => {
     const storedAdminData = localStorage.getItem('adminData');
