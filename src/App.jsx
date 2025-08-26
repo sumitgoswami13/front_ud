@@ -29,6 +29,7 @@ import PricingPolicy from "./components/PricingPolicy";
 import DeliveryPolicy from "./components/DeliveryPolicy";
 import CancellationRefundPolicy from "./components/CancellationRefundPolicy";
 
+import secureStore from "./utils/secureStorage";
 const LOCAL_USER_KEY = "udin:user";       // where signup stores user profile
 const ACCESS_TOKEN_KEY = "accessToken";   // where we store JWT access token
 
@@ -52,18 +53,20 @@ function AppShell() {
 
   // restore session on boot
   useEffect(() => {
-    const token = localStorage.getItem(ACCESS_TOKEN_KEY);
-    const userJson =
-      localStorage.getItem(LOCAL_USER_KEY) || localStorage.getItem("userData"); // fallback to older key
-    const parsed = userJson ? safeParse(userJson) : null;
+    (async () => {
+      const token = await secureStore.getItem(ACCESS_TOKEN_KEY);
+      const userJson =
+        (await secureStore.getItem(LOCAL_USER_KEY)) || (await secureStore.getItem("userData"));
+      const parsed = userJson ? safeParse(userJson) : null;
 
-    setIsLoggedIn(Boolean(token && parsed));
-    setPersistedUser(parsed || null);
+      setIsLoggedIn(Boolean(token && parsed));
+      setPersistedUser(parsed || null);
 
-    // Check admin session
-    const isAdmin = localStorage.getItem('isAdmin') === 'true';
-    const adminData = localStorage.getItem('adminData');
-    setIsAdminLoggedIn(Boolean(isAdmin && adminData));
+      // Check admin session
+      const isAdminFlag = (await secureStore.getItem('isAdmin')) === 'true' || localStorage.getItem('isAdmin') === 'true';
+      const adminData = (await secureStore.getItem('adminData')) || localStorage.getItem('adminData');
+      setIsAdminLoggedIn(Boolean(isAdminFlag && adminData));
+    })();
   }, []);
 
   const safeParse = (s) => {
@@ -111,16 +114,24 @@ function AppShell() {
     navigate("/login", { replace: true });
   };
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = async () => {
     setIsLoggedIn(true);
     const userJson =
-      localStorage.getItem(LOCAL_USER_KEY) || localStorage.getItem("userData");
+      (await secureStore.getItem(LOCAL_USER_KEY)) || (await secureStore.getItem("userData"));
     setPersistedUser(userJson ? safeParse(userJson) : null);
     navigate("/dashboard", { replace: true });
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // Clear secure keys and legacy storage
+    await secureStore.removeItem(ACCESS_TOKEN_KEY);
+    await secureStore.removeItem('refreshToken');
+    await secureStore.removeItem(LOCAL_USER_KEY);
+    await secureStore.removeItem('userData');
+    await secureStore.removeItem('adminData');
+    await secureStore.removeItem('isAdmin');
     localStorage.clear();
+
     setIsLoggedIn(false);
     setPersistedUser(null);
     setUserInfo(null);
@@ -136,7 +147,9 @@ function AppShell() {
     navigate("/admin/dashboard", { replace: true });
   };
 
-  const handleAdminLogout = () => {
+  const handleAdminLogout = async () => {
+    await secureStore.removeItem('adminData');
+    await secureStore.removeItem('isAdmin');
     localStorage.removeItem('adminData');
     localStorage.removeItem('isAdmin');
     setIsAdminLoggedIn(false);
