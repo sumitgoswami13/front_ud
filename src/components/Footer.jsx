@@ -44,10 +44,10 @@ const Footer = () => {
               QUICK LINKS
             </h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Login</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Sign Up</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Dashboard</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Upload Documents</a></li>
+              <li><Link to="/login" className="text-sm text-gray-600 hover:text-gray-900">Login</Link></li>
+              <li><Link to="/register" className="text-sm text-gray-600 hover:text-gray-900">Sign Up</Link></li>
+              <li><Link to="/dashboard" className="text-sm text-gray-600 hover:text-gray-900">Dashboard</Link></li>
+              <li><Link to="/upload" className="text-sm text-gray-600 hover:text-gray-900">Upload Documents</Link></li>
             </ul>
           </div>
 
