@@ -7,11 +7,12 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000
 /* -------------------------------------------
    Auth header helpers
 -------------------------------------------- */
-const getAccessToken = () => localStorage.getItem("accessToken") || "";
-const setAccessToken = (t) => t && localStorage.setItem("accessToken", t);
-const setRefreshToken = (t) => t && localStorage.setItem("refreshToken", t);
-const getAuthHeaders = () => {
-  const token = getAccessToken();
+import secureStore from "../utils/secureStorage";
+const getAccessToken = async () => (await secureStore.getItem("accessToken")) || "";
+const setAccessToken = async (t) => t && (await secureStore.setItem("accessToken", t));
+const setRefreshToken = async (t) => t && (await secureStore.setItem("refreshToken", t));
+const getAuthHeaders = async () => {
+  const token = await getAccessToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
