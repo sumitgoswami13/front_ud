@@ -11,6 +11,14 @@ const Dashboard = ({ onLogout, onBack }) => {
   const [userData, setUserData] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(null);
 
+  // Add Document flow state
+  const [showAddDocumentModal, setShowAddDocumentModal] = useState(false);
+  const [showAddDocumentPayment, setShowAddDocumentPayment] = useState(false);
+  const [showAddDocumentProgress, setShowAddDocumentProgress] = useState(false);
+  const [addDocumentFiles, setAddDocumentFiles] = useState([]);
+  const [addDocumentTransactionId, setAddDocumentTransactionId] = useState(null);
+  const [addDocumentPaymentId, setAddDocumentPaymentId] = useState(null);
+
   useEffect(() => {
     // Get user data from localStorage
     const storedUserData = localStorage.getItem('userData');
