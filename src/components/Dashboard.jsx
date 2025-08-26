@@ -696,6 +696,28 @@ const Dashboard = ({ onLogout, onBack }) => {
           </div>
         </div>
       )}
+
+      {/* Add Document Workflow Components */}
+      <AddDocumentModal
+        isOpen={showAddDocumentModal}
+        onClose={handleAddDocumentModalClose}
+        onContinue={handleAddDocumentContinue}
+      />
+
+      <AddDocumentPayment
+        files={addDocumentFiles}
+        onBack={handleAddDocumentPaymentBack}
+        onPaymentSuccess={handleAddDocumentPaymentSuccess}
+      />
+
+      <AddDocumentProgress
+        isOpen={showAddDocumentProgress}
+        onClose={() => setShowAddDocumentProgress(false)}
+        onUploadComplete={handleAddDocumentUploadComplete}
+        files={addDocumentFiles}
+        transactionId={addDocumentTransactionId}
+        paymentId={addDocumentPaymentId}
+      />
     </div>
   );
 };
