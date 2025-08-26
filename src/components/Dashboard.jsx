@@ -179,6 +179,46 @@ const Dashboard = ({ onLogout, onBack }) => {
     }
   };
 
+  // Add Document workflow handlers
+  const handleAddDocumentClick = () => {
+    setShowAddDocumentModal(true);
+  };
+
+  const handleAddDocumentModalClose = () => {
+    setShowAddDocumentModal(false);
+    setAddDocumentFiles([]);
+  };
+
+  const handleAddDocumentContinue = (files) => {
+    setAddDocumentFiles(files);
+    setShowAddDocumentModal(false);
+    setShowAddDocumentPayment(true);
+  };
+
+  const handleAddDocumentPaymentSuccess = (transactionId, paymentId) => {
+    setAddDocumentTransactionId(transactionId);
+    setAddDocumentPaymentId(paymentId);
+    setShowAddDocumentPayment(false);
+    setShowAddDocumentProgress(true);
+  };
+
+  const handleAddDocumentPaymentBack = () => {
+    setShowAddDocumentPayment(false);
+    setShowAddDocumentModal(true);
+  };
+
+  const handleAddDocumentUploadComplete = () => {
+    setShowAddDocumentProgress(false);
+    setAddDocumentFiles([]);
+    setAddDocumentTransactionId(null);
+    setAddDocumentPaymentId(null);
+    // Refresh data to show new documents
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      fetchData(userId);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
