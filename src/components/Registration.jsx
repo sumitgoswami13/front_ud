@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import EmailVerification from './EmailVerification.jsx';
 import { registerUser } from '../api/api.jsx'; // ⬅️ adjust path to your API helpers
+import secureStore from '../utils/secureStorage';
 
 const LOCAL_USER_KEY = 'udin:user';
 const ACCESS_TOKEN_KEY = 'accessToken';
@@ -47,7 +48,7 @@ const Registration = ({ onBack, uploadedFiles, onRegistrationComplete }) => {
     setShowEmailVerification(false);
   };
 
-  const saveUserToLocalDB = (payload) => {
+  const saveUserToLocalDB = async (payload) => {
     // payload matches your signup response shape:
     // { success: true, data: { id, firstName, ..., tempPassword, accessToken, refreshToken } }
     const data = payload?.data || payload;
@@ -68,10 +69,11 @@ const Registration = ({ onBack, uploadedFiles, onRegistrationComplete }) => {
     };
 
     try {
-      localStorage.setItem(LOCAL_USER_KEY, JSON.stringify(userRecord));
-      if (data.accessToken) localStorage.setItem(ACCESS_TOKEN_KEY, data.accessToken);
-      if (data.refreshToken) localStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
-      if (data.tempPassword) localStorage.setItem(TEMP_PASSWORD_KEY, data.tempPassword);
+      await secureStore.setJSON(LOCAL_USER_KEY, userRecord);
+      await secureStore.setJSON('userData', userRecord);
+      if (data.accessToken) await secureStore.setItem(ACCESS_TOKEN_KEY, data.accessToken);
+      if (data.refreshToken) await secureStore.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+      if (data.tempPassword) await secureStore.setItem(TEMP_PASSWORD_KEY, data.tempPassword);
     } catch (e) {
       console.warn('Failed to persist user locally:', e);
     }
@@ -95,8 +97,7 @@ const Registration = ({ onBack, uploadedFiles, onRegistrationComplete }) => {
       };
 
       const resp = await registerUser(payload);
-      // Persist in local "DB" (localStorage)
-      saveUserToLocalDB(resp);
+      await saveUserToLocalDB(resp);
       // Bubble up full response (parent can start payment flow, etc.)
       onRegistrationComplete?.(resp?.data || resp);
     } catch (e) {
