@@ -57,11 +57,11 @@ const Footer = () => {
               LEGAL
             </h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Terms & Conditions</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Privacy Policy</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Pricing Policy</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Delivery Policy</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Cancellation & Refund</a></li>
+              <li><Link to="/terms" className="text-sm text-gray-600 hover:text-gray-900">Terms & Conditions</Link></li>
+              <li><Link to="/privacy" className="text-sm text-gray-600 hover:text-gray-900">Privacy Policy</Link></li>
+              <li><Link to="/pricing-policy" className="text-sm text-gray-600 hover:text-gray-900">Pricing Policy</Link></li>
+              <li><Link to="/delivery-policy" className="text-sm text-gray-600 hover:text-gray-900">Delivery Policy</Link></li>
+              <li><Link to="/cancellation-refund" className="text-sm text-gray-600 hover:text-gray-900">Cancellation & Refund</Link></li>
             </ul>
           </div>
         </div>
