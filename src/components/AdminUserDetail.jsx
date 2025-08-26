@@ -436,6 +436,13 @@ const AdminUserDetail = ({ userId, onBack, onLogout }) => {
                             >
                               📤
                             </button>
+                            <button
+                              onClick={() => handleShowNotes(doc)}
+                              className="text-purple-600 hover:text-purple-800"
+                              title="View/Add notes"
+                            >
+                              💬
+                            </button>
                           </div>
                         </td>
                       </tr>
