@@ -5,6 +5,7 @@ import {
   createTransaction,
   updateTransactionPayment,
 } from "../api/api.jsx";
+import secureStore from "../utils/secureStorage";
 
 const LOCAL_USER_KEY = "udin:user";
 
@@ -41,8 +42,8 @@ const PaymentSummary = ({ userInfo, onBack, onPaymentSuccess }) => {
         setIsLoading(false);
       }
       try {
-        const raw = localStorage.getItem(LOCAL_USER_KEY);
-        if (raw) setLocalUser(JSON.parse(raw));
+        const user = await secureStore.getJSON(LOCAL_USER_KEY);
+        if (user) setLocalUser(user);
       } catch {}
     })();
   }, []);
