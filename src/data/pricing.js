@@ -71,22 +71,29 @@ export const getDocumentCategories = () => {
 };
 
 export const calculateTotal = (selectedDocuments) => {
+  console.log("calculateTotal: Processing documents", selectedDocuments);
+
   const subtotal = selectedDocuments.reduce((total, doc) => {
     const pricing = documentPricing[doc.documentType];
+    console.log(`calculateTotal: Document ${doc.name} (${doc.documentType}) - pricing:`, pricing);
     return total + (pricing ? pricing.price : 0);
   }, 0);
-  
+
   const gst = Math.round(subtotal * 0.18);
   const total = subtotal + gst;
-  
-  return {
+
+  const result = {
     subtotal,
     gst,
     total,
     items: selectedDocuments.map(doc => ({
       name: documentPricing[doc.documentType]?.name || 'Unknown Document',
       price: documentPricing[doc.documentType]?.price || 0,
-      quantity: 1
+      quantity: 1,
+      documentType: doc.documentType
     }))
   };
+
+  console.log("calculateTotal: Final calculation", result);
+  return result;
 };

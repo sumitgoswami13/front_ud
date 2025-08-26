@@ -8,6 +8,8 @@ import {
 const LOCAL_USER_KEY = "udin:user";
 
 const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
+  console.log("AddDocumentPayment: Component mounted with props", { files, onBack, onPaymentSuccess });
+  
   const [calculation, setCalculation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -27,15 +29,32 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
   }, []);
 
   useEffect(() => {
+    console.log("AddDocumentPayment: useEffect triggered", { files });
     setIsLoading(true);
     try {
       if (files && files.length > 0) {
-        setCalculation(calculateTotal(files));
+        console.log("AddDocumentPayment: Processing files for calculation", files);
+        const calc = calculateTotal(files);
+        console.log("AddDocumentPayment: Calculation result", calc);
+        setCalculation(calc);
+      } else {
+        console.log("AddDocumentPayment: No files provided", { files });
       }
       
-      const raw = localStorage.getItem(LOCAL_USER_KEY);
+      // Try multiple user storage keys
+      let raw = localStorage.getItem(LOCAL_USER_KEY);
+      if (!raw) {
+        raw = localStorage.getItem('userData');
+      }
+      
       if (raw) {
-        setLocalUser(JSON.parse(raw));
+        const user = JSON.parse(raw);
+        console.log("AddDocumentPayment: User found in localStorage", user);
+        setLocalUser(user);
+      } else {
+        console.log("AddDocumentPayment: No user found in localStorage");
+        // Log all localStorage keys for debugging
+        console.log("All localStorage keys:", Object.keys(localStorage));
       }
     } catch (e) {
       console.error("Error processing payment data:", e);
@@ -60,11 +79,35 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
   };
 
   const handlePayment = async () => {
+    // Try to load Razorpay if not available
+    if (!window.Razorpay) {
+      console.log("Razorpay not found, attempting to load...");
+      try {
+        await new Promise((resolve, reject) => {
+          const script = document.createElement("script");
+          script.src = "https://checkout.razorpay.com/v1/checkout.js";
+          script.onload = () => {
+            setRazorpayLoaded(true);
+            resolve();
+          };
+          script.onerror = () => reject(new Error("Failed to load Razorpay"));
+          document.head.appendChild(script);
+        });
+      } catch (error) {
+        console.error("Failed to load Razorpay:", error);
+        alert("Payment system could not be loaded. Please check your internet connection and try again.");
+        return;
+      }
+    }
+    
     if (!window.Razorpay) {
       alert("Payment system not available. Please refresh and try again.");
       return;
     }
-    if (!calculation) return;
+    if (!calculation) {
+      alert("Calculation data missing. Please go back and try again.");
+      return;
+    }
 
     setIsProcessingPayment(true);
 
@@ -215,8 +258,8 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-600 to-purple-700 px-8 py-6 text-center">
+      <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+        <div className="bg-gradient-to-r from-purple-600 to-purple-700 px-8 py-6 text-center flex-shrink-0">
           <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
@@ -226,7 +269,7 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
           <p className="text-purple-100 text-sm mt-2">Additional Documents</p>
         </div>
 
-        <div className="p-8 max-h-[calc(90vh-200px)] overflow-y-auto">
+        <div className="p-8 flex-1 overflow-y-auto min-h-0">
           {/* Items */}
           <div className="mb-8">
             <div className="flex justify-between items-center mb-4">
@@ -300,7 +343,7 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
         </div>
 
         {/* Actions */}
-        <div className="flex space-x-4 p-6 border-t bg-gray-50">
+        <div className="flex space-x-4 p-6 border-t bg-gray-50 flex-shrink-0">
           <button
             onClick={onBack}
             disabled={isProcessingPayment}
