@@ -21,10 +21,11 @@ const getAuthHeaders = async () => {
 -------------------------------------------- */
 const apiRequest = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
+  const authHeaders = await getAuthHeaders();
   const config = {
     headers: {
       "Content-Type": "application/json",
-      ...getAuthHeaders(),
+      ...authHeaders,
       ...(options.headers || {}),
     },
     ...options,
@@ -45,10 +46,11 @@ const apiRequest = async (endpoint, options = {}) => {
 const apiFormRequest = async (endpoint, formData, method = "POST") => {
   const url = `${API_BASE_URL}${endpoint}`;
   try {
+    const authHeaders = await getAuthHeaders();
     const res = await fetch(url, {
       method,
       headers: {
-        ...getAuthHeaders(),
+        ...authHeaders,
       },
       body: formData,
     });
@@ -88,8 +90,8 @@ export const loginUser = async (email, password) => {
   // Persist tokens if backend returns them
   const at = res?.data?.accessToken || res?.accessToken;
   const rt = res?.data?.refreshToken || res?.refreshToken;
-  if (at) setAccessToken(at);
-  if (rt) setRefreshToken(rt);
+  if (at) await setAccessToken(at);
+  if (rt) await setRefreshToken(rt);
   return res;
 };
 
