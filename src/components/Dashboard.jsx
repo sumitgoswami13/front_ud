@@ -22,6 +22,8 @@ const Dashboard = ({ onLogout, onBack }) => {
   const [addDocumentFiles, setAddDocumentFiles] = useState([]);
   const [addDocumentTransactionId, setAddDocumentTransactionId] = useState(null);
   const [addDocumentPaymentId, setAddDocumentPaymentId] = useState(null);
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  const [selectedDocumentForNotes, setSelectedDocumentForNotes] = useState(null);
 
   useEffect(() => {
     // Get user data from localStorage
