@@ -225,6 +225,16 @@ const Dashboard = ({ onLogout, onBack }) => {
     }
   };
 
+  const handleShowNotes = (document) => {
+    setSelectedDocumentForNotes(document);
+    setShowNotesModal(true);
+  };
+
+  const handleCloseNotes = () => {
+    setShowNotesModal(false);
+    setSelectedDocumentForNotes(null);
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
