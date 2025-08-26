@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  getDocumentsByUser, 
-  getTransactionsByUser, 
-  updateDocumentStatus, 
-  uploadSignedDocument 
+import {
+  getDocumentsByUser,
+  getTransactionsByUser,
+  updateDocumentStatus,
+  uploadSignedDocument
 } from '../api/api';
+import DocumentNotes from './DocumentNotes';
 
 const AdminUserDetail = ({ userId, onBack, onLogout }) => {
   const [documents, setDocuments] = useState([]);
