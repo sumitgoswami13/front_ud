@@ -3,6 +3,7 @@ import { getDocumentsByUser, getTransactionsByUser, deleteDocument } from '../ap
 import AddDocumentModal from './AddDocumentModal';
 import AddDocumentPayment from './AddDocumentPayment';
 import AddDocumentProgress from './AddDocumentProgress';
+import DocumentNotes from './DocumentNotes';
 
 const Dashboard = ({ onLogout, onBack }) => {
   const [documents, setDocuments] = useState([]);
@@ -21,6 +22,8 @@ const Dashboard = ({ onLogout, onBack }) => {
   const [addDocumentFiles, setAddDocumentFiles] = useState([]);
   const [addDocumentTransactionId, setAddDocumentTransactionId] = useState(null);
   const [addDocumentPaymentId, setAddDocumentPaymentId] = useState(null);
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  const [selectedDocumentForNotes, setSelectedDocumentForNotes] = useState(null);
 
   useEffect(() => {
     // Get user data from localStorage
@@ -220,6 +223,16 @@ const Dashboard = ({ onLogout, onBack }) => {
     if (userId) {
       fetchData(userId);
     }
+  };
+
+  const handleShowNotes = (document) => {
+    setSelectedDocumentForNotes(document);
+    setShowNotesModal(true);
+  };
+
+  const handleCloseNotes = () => {
+    setShowNotesModal(false);
+    setSelectedDocumentForNotes(null);
   };
 
   if (isLoading) {
@@ -460,6 +473,15 @@ const Dashboard = ({ onLogout, onBack }) => {
                             >
                               <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                              </svg>
+                            </button>
+                            <button
+                              onClick={() => handleShowNotes(doc)}
+                              className="text-blue-600 hover:text-blue-800"
+                              title="View/Add notes"
+                            >
+                              <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                               </svg>
                             </button>
                             <button
@@ -720,6 +742,17 @@ const Dashboard = ({ onLogout, onBack }) => {
         transactionId={addDocumentTransactionId}
         paymentId={addDocumentPaymentId}
       />
+
+      {/* Document Notes Modal */}
+      {selectedDocumentForNotes && (
+        <DocumentNotes
+          documentId={selectedDocumentForNotes._id}
+          userId={localStorage.getItem('userId')}
+          userType="user"
+          isVisible={showNotesModal}
+          onClose={handleCloseNotes}
+        />
+      )}
     </div>
   );
 };

@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  getDocumentsByUser, 
-  getTransactionsByUser, 
-  updateDocumentStatus, 
-  uploadSignedDocument 
+import {
+  getDocumentsByUser,
+  getTransactionsByUser,
+  updateDocumentStatus,
+  uploadSignedDocument
 } from '../api/api';
+import DocumentNotes from './DocumentNotes';
 
 const AdminUserDetail = ({ userId, onBack, onLogout }) => {
   const [documents, setDocuments] = useState([]);
@@ -20,6 +21,8 @@ const AdminUserDetail = ({ userId, onBack, onLogout }) => {
   const [isUploadingFile, setIsUploadingFile] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState('');
   const [selectedFile, setSelectedFile] = useState(null);
+  const [showNotesModal, setShowNotesModal] = useState(false);
+  const [selectedDocumentForNotes, setSelectedDocumentForNotes] = useState(null);
 
   useEffect(() => {
     const storedAdminData = localStorage.getItem('adminData');
@@ -77,6 +80,16 @@ const AdminUserDetail = ({ userId, onBack, onLogout }) => {
   const handleUploadSigned = (document) => {
     setSelectedDocument(document);
     setShowUploadModal(true);
+  };
+
+  const handleShowNotes = (document) => {
+    setSelectedDocumentForNotes(document);
+    setShowNotesModal(true);
+  };
+
+  const handleCloseNotes = () => {
+    setShowNotesModal(false);
+    setSelectedDocumentForNotes(null);
   };
 
   const updateStatus = async () => {
@@ -423,6 +436,13 @@ const AdminUserDetail = ({ userId, onBack, onLogout }) => {
                             >
                               📤
                             </button>
+                            <button
+                              onClick={() => handleShowNotes(doc)}
+                              className="text-purple-600 hover:text-purple-800"
+                              title="View/Add notes"
+                            >
+                              💬
+                            </button>
                           </div>
                         </td>
                       </tr>
@@ -629,6 +649,17 @@ const AdminUserDetail = ({ userId, onBack, onLogout }) => {
             </div>
           </div>
         </div>
+      )}
+
+      {/* Document Notes Modal */}
+      {selectedDocumentForNotes && (
+        <DocumentNotes
+          documentId={selectedDocumentForNotes._id}
+          userId={adminData?.user?.id || adminData?.id || userId}
+          userType="admin"
+          isVisible={showNotesModal}
+          onClose={handleCloseNotes}
+        />
       )}
     </div>
   );
