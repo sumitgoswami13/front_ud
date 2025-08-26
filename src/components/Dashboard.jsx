@@ -3,6 +3,7 @@ import { getDocumentsByUser, getTransactionsByUser, deleteDocument } from '../ap
 import AddDocumentModal from './AddDocumentModal';
 import AddDocumentPayment from './AddDocumentPayment';
 import AddDocumentProgress from './AddDocumentProgress';
+import DocumentNotes from './DocumentNotes';
 
 const Dashboard = ({ onLogout, onBack }) => {
   const [documents, setDocuments] = useState([]);
