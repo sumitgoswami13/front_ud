@@ -23,6 +23,11 @@ import AdminDashboard from "./components/AdminDashboard";
 import AdminUserDetail from "./components/AdminUserDetail";
 import ApiDebug from "./components/ApiDebug";
 import RazorpayTest from "./components/RazorpayTest";
+import TermsConditions from "./components/TermsConditions";
+import PrivacyPolicy from "./components/PrivacyPolicy";
+import PricingPolicy from "./components/PricingPolicy";
+import DeliveryPolicy from "./components/DeliveryPolicy";
+import CancellationRefundPolicy from "./components/CancellationRefundPolicy";
 
 const LOCAL_USER_KEY = "udin:user";       // where signup stores user profile
 const ACCESS_TOKEN_KEY = "accessToken";   // where we store JWT access token
@@ -274,6 +279,13 @@ function AppShell() {
               )
             }
           />
+
+          {/* Policy Pages */}
+          <Route path="/terms" element={<TermsConditions />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/pricing-policy" element={<PricingPolicy />} />
+          <Route path="/delivery-policy" element={<DeliveryPolicy />} />
+          <Route path="/cancellation-refund" element={<CancellationRefundPolicy />} />
 
           {/* Dev helpers */}
           {import.meta.env.DEV && (

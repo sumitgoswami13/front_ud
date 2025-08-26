@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
   return (
@@ -43,10 +44,10 @@ const Footer = () => {
               QUICK LINKS
             </h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Login</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Sign Up</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Dashboard</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Upload Documents</a></li>
+              <li><Link to="/login" className="text-sm text-gray-600 hover:text-gray-900">Login</Link></li>
+              <li><Link to="/register" className="text-sm text-gray-600 hover:text-gray-900">Sign Up</Link></li>
+              <li><Link to="/dashboard" className="text-sm text-gray-600 hover:text-gray-900">Dashboard</Link></li>
+              <li><Link to="/upload" className="text-sm text-gray-600 hover:text-gray-900">Upload Documents</Link></li>
             </ul>
           </div>
 
@@ -56,11 +57,11 @@ const Footer = () => {
               LEGAL
             </h3>
             <ul className="space-y-2">
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Terms & Conditions</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Privacy Policy</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Pricing Policy</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Delivery Policy</a></li>
-              <li><a href="#" className="text-sm text-gray-600 hover:text-gray-900">Cancellation & Refund</a></li>
+              <li><Link to="/terms" className="text-sm text-gray-600 hover:text-gray-900">Terms & Conditions</Link></li>
+              <li><Link to="/privacy" className="text-sm text-gray-600 hover:text-gray-900">Privacy Policy</Link></li>
+              <li><Link to="/pricing-policy" className="text-sm text-gray-600 hover:text-gray-900">Pricing Policy</Link></li>
+              <li><Link to="/delivery-policy" className="text-sm text-gray-600 hover:text-gray-900">Delivery Policy</Link></li>
+              <li><Link to="/cancellation-refund" className="text-sm text-gray-600 hover:text-gray-900">Cancellation & Refund</Link></li>
             </ul>
           </div>
         </div>
