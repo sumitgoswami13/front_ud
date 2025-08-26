@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getDocumentsByUser, getTransactionsByUser, deleteDocument } from '../api/api';
+import AddDocumentModal from './AddDocumentModal';
+import AddDocumentPayment from './AddDocumentPayment';
+import AddDocumentProgress from './AddDocumentProgress';
 
 const Dashboard = ({ onLogout, onBack }) => {
   const [documents, setDocuments] = useState([]);
@@ -10,6 +13,14 @@ const Dashboard = ({ onLogout, onBack }) => {
   const [error, setError] = useState('');
   const [userData, setUserData] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(null);
+
+  // Add Document flow state
+  const [showAddDocumentModal, setShowAddDocumentModal] = useState(false);
+  const [showAddDocumentPayment, setShowAddDocumentPayment] = useState(false);
+  const [showAddDocumentProgress, setShowAddDocumentProgress] = useState(false);
+  const [addDocumentFiles, setAddDocumentFiles] = useState([]);
+  const [addDocumentTransactionId, setAddDocumentTransactionId] = useState(null);
+  const [addDocumentPaymentId, setAddDocumentPaymentId] = useState(null);
 
   useEffect(() => {
     // Get user data from localStorage
@@ -171,6 +182,46 @@ const Dashboard = ({ onLogout, onBack }) => {
     }
   };
 
+  // Add Document workflow handlers
+  const handleAddDocumentClick = () => {
+    setShowAddDocumentModal(true);
+  };
+
+  const handleAddDocumentModalClose = () => {
+    setShowAddDocumentModal(false);
+    setAddDocumentFiles([]);
+  };
+
+  const handleAddDocumentContinue = (files) => {
+    setAddDocumentFiles(files);
+    setShowAddDocumentModal(false);
+    setShowAddDocumentPayment(true);
+  };
+
+  const handleAddDocumentPaymentSuccess = (transactionId, paymentId) => {
+    setAddDocumentTransactionId(transactionId);
+    setAddDocumentPaymentId(paymentId);
+    setShowAddDocumentPayment(false);
+    setShowAddDocumentProgress(true);
+  };
+
+  const handleAddDocumentPaymentBack = () => {
+    setShowAddDocumentPayment(false);
+    setShowAddDocumentModal(true);
+  };
+
+  const handleAddDocumentUploadComplete = () => {
+    setShowAddDocumentProgress(false);
+    setAddDocumentFiles([]);
+    setAddDocumentTransactionId(null);
+    setAddDocumentPaymentId(null);
+    // Refresh data to show new documents
+    const userId = localStorage.getItem('userId');
+    if (userId) {
+      fetchData(userId);
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-gray-50 flex items-center justify-center">
@@ -304,8 +355,19 @@ const Dashboard = ({ onLogout, onBack }) => {
             <div className="p-6 border-b">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">My Documents</h2>
-                <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <span>Total: {documents.length}</span>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <span>Total: {documents.length}</span>
+                  </div>
+                  <button
+                    onClick={handleAddDocumentClick}
+                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium flex items-center space-x-2 transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>Add Document</span>
+                  </button>
                 </div>
               </div>
             </div>
@@ -634,6 +696,30 @@ const Dashboard = ({ onLogout, onBack }) => {
           </div>
         </div>
       )}
+
+      {/* Add Document Workflow Components */}
+      <AddDocumentModal
+        isOpen={showAddDocumentModal}
+        onClose={handleAddDocumentModalClose}
+        onContinue={handleAddDocumentContinue}
+      />
+
+      {showAddDocumentPayment && (
+        <AddDocumentPayment
+          files={addDocumentFiles}
+          onBack={handleAddDocumentPaymentBack}
+          onPaymentSuccess={handleAddDocumentPaymentSuccess}
+        />
+      )}
+
+      <AddDocumentProgress
+        isOpen={showAddDocumentProgress}
+        onClose={() => setShowAddDocumentProgress(false)}
+        onUploadComplete={handleAddDocumentUploadComplete}
+        files={addDocumentFiles}
+        transactionId={addDocumentTransactionId}
+        paymentId={addDocumentPaymentId}
+      />
     </div>
   );
 };
