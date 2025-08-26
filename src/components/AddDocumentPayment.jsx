@@ -318,6 +318,16 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
           )}
         </div>
 
+        {/* Debug Info */}
+        <div className="p-4 bg-yellow-50 border-t border-yellow-200 text-xs">
+          <div>Debug Info:</div>
+          <div>razorpayLoaded: {razorpayLoaded.toString()}</div>
+          <div>isProcessingPayment: {isProcessingPayment.toString()}</div>
+          <div>calculation: {calculation ? 'exists' : 'null'}</div>
+          <div>files count: {files ? files.length : 0}</div>
+          <div>Razorpay available: {typeof window.Razorpay !== 'undefined' ? 'yes' : 'no'}</div>
+        </div>
+
         {/* Actions */}
         <div className="flex space-x-4 p-6 border-t bg-gray-50">
           <button
@@ -329,9 +339,9 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
           </button>
           <button
             onClick={handlePayment}
-            disabled={isProcessingPayment || !razorpayLoaded}
+            disabled={isProcessingPayment}
             className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-              isProcessingPayment || !razorpayLoaded
+              isProcessingPayment
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transform hover:scale-105 shadow-lg"
             } text-white`}
@@ -344,7 +354,7 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
             ) : !razorpayLoaded ? (
               <span className="flex items-center justify-center space-x-2">
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Loading Razorpay...</span>
+                <span>Loading Razorpay... (Click anyway to test)</span>
               </span>
             ) : (
               <span className="flex items-center justify-center space-x-2">
