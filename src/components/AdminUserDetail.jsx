@@ -650,6 +650,17 @@ const AdminUserDetail = ({ userId, onBack, onLogout }) => {
           </div>
         </div>
       )}
+
+      {/* Document Notes Modal */}
+      {selectedDocumentForNotes && (
+        <DocumentNotes
+          documentId={selectedDocumentForNotes._id}
+          userId={adminData?.user?.id || adminData?.id || userId}
+          userType="admin"
+          isVisible={showNotesModal}
+          onClose={handleCloseNotes}
+        />
+      )}
     </div>
   );
 };
