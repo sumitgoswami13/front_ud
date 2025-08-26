@@ -27,15 +27,25 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
   }, []);
 
   useEffect(() => {
+    console.log("AddDocumentPayment: useEffect triggered", { files });
     setIsLoading(true);
     try {
       if (files && files.length > 0) {
-        setCalculation(calculateTotal(files));
+        console.log("AddDocumentPayment: Processing files for calculation", files);
+        const calc = calculateTotal(files);
+        console.log("AddDocumentPayment: Calculation result", calc);
+        setCalculation(calc);
+      } else {
+        console.log("AddDocumentPayment: No files provided", { files });
       }
-      
+
       const raw = localStorage.getItem(LOCAL_USER_KEY);
       if (raw) {
-        setLocalUser(JSON.parse(raw));
+        const user = JSON.parse(raw);
+        console.log("AddDocumentPayment: User found in localStorage", user);
+        setLocalUser(user);
+      } else {
+        console.log("AddDocumentPayment: No user found in localStorage");
       }
     } catch (e) {
       console.error("Error processing payment data:", e);
