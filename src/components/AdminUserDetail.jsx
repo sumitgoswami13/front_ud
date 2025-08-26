@@ -82,6 +82,16 @@ const AdminUserDetail = ({ userId, onBack, onLogout }) => {
     setShowUploadModal(true);
   };
 
+  const handleShowNotes = (document) => {
+    setSelectedDocumentForNotes(document);
+    setShowNotesModal(true);
+  };
+
+  const handleCloseNotes = () => {
+    setShowNotesModal(false);
+    setSelectedDocumentForNotes(null);
+  };
+
   const updateStatus = async () => {
     if (!selectedDocument || !selectedStatus) return;
     
