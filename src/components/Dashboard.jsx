@@ -196,9 +196,11 @@ const Dashboard = ({ onLogout, onBack }) => {
   };
 
   const handleAddDocumentContinue = (files) => {
+    console.log("Dashboard: handleAddDocumentContinue called with files", files);
     setAddDocumentFiles(files);
     setShowAddDocumentModal(false);
     setShowAddDocumentPayment(true);
+    console.log("Dashboard: Payment modal should now be visible");
   };
 
   const handleAddDocumentPaymentSuccess = (transactionId, paymentId) => {
@@ -732,6 +734,15 @@ const Dashboard = ({ onLogout, onBack }) => {
           onBack={handleAddDocumentPaymentBack}
           onPaymentSuccess={handleAddDocumentPaymentSuccess}
         />
+      )}
+
+      {/* Debug output */}
+      {process.env.NODE_ENV === 'development' && (
+        <div className="fixed bottom-4 right-4 bg-yellow-100 p-2 text-xs border rounded max-w-sm">
+          <div>showAddDocumentPayment: {showAddDocumentPayment.toString()}</div>
+          <div>addDocumentFiles: {addDocumentFiles.length} files</div>
+          <div>Files: {addDocumentFiles.map(f => f.name).join(', ')}</div>
+        </div>
       )}
 
       <AddDocumentProgress
