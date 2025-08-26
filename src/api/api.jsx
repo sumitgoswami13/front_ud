@@ -342,6 +342,53 @@ export const deleteDocument = async (documentId) =>
   apiRequest(`/api/documents/${documentId}`, { method: "DELETE" });
 
 /* -------------------------------------------
+   Notes APIs (align with Postman collection)
+-------------------------------------------- */
+
+// Add a note to a document
+export const addNoteToDocument = async (documentId, noteData) =>
+  apiRequest(`/api/notes/document/${documentId}`, {
+    method: "POST",
+    body: JSON.stringify(noteData),
+  });
+
+// Get notes for a document
+export const getDocumentNotes = async (documentId, userId, userType) => {
+  const queryParams = new URLSearchParams({ userId, userType });
+  return apiRequest(`/api/notes/document/${documentId}?${queryParams}`, { method: "GET" });
+};
+
+// Get document note statistics
+export const getDocumentNoteStats = async (documentId) =>
+  apiRequest(`/api/notes/document/${documentId}/stats`, { method: "GET" });
+
+// Get notes for a transaction
+export const getTransactionNotes = async (transactionId, userId, userType) => {
+  const queryParams = new URLSearchParams({ userId, userType });
+  return apiRequest(`/api/notes/transaction/${transactionId}?${queryParams}`, { method: "GET" });
+};
+
+// Get notes by user
+export const getNotesByUser = async (userId, userType) => {
+  const queryParams = new URLSearchParams({ userType });
+  return apiRequest(`/api/notes/user/${userId}?${queryParams}`, { method: "GET" });
+};
+
+// Update a note
+export const updateNote = async (noteId, noteData) =>
+  apiRequest(`/api/notes/${noteId}`, {
+    method: "PATCH",
+    body: JSON.stringify(noteData),
+  });
+
+// Delete a note
+export const deleteNote = async (noteId, userId, userType) =>
+  apiRequest(`/api/notes/${noteId}`, {
+    method: "DELETE",
+    body: JSON.stringify({ userId, userType }),
+  });
+
+/* -------------------------------------------
    Legacy / debug helpers (kept for compatibility)
 -------------------------------------------- */
 export const getUploadStatus = async (uploadId) => {
