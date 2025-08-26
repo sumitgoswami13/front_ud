@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { getallUsers, getDocumentsByUser, getTransactionsByUser } from '../api/api';
+import secureStore from '../utils/secureStorage';
 
 const AdminDashboard = ({ onLogout, onUserSelect }) => {
   const [users, setUsers] = useState([]);
@@ -16,13 +17,11 @@ const AdminDashboard = ({ onLogout, onUserSelect }) => {
   const [total, setTotal] = useState(0);
 
   useEffect(() => {
-    // Get admin data from localStorage
-    const storedAdminData = localStorage.getItem('adminData');
-    if (storedAdminData) {
-      setAdminData(JSON.parse(storedAdminData));
-    }
-    
-    fetchUsers();
+    (async () => {
+      const storedAdminData = await secureStore.getJSON('adminData');
+      if (storedAdminData) setAdminData(storedAdminData);
+      fetchUsers();
+    })();
   }, [currentPage]);
 
   const fetchUsers = async () => {
@@ -118,9 +117,6 @@ const AdminDashboard = ({ onLogout, onUserSelect }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('adminData');
-    localStorage.removeItem('isAdmin');
-    localStorage.clear();
     onLogout?.();
   };
 
