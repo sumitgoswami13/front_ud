@@ -742,6 +742,17 @@ const Dashboard = ({ onLogout, onBack }) => {
         transactionId={addDocumentTransactionId}
         paymentId={addDocumentPaymentId}
       />
+
+      {/* Document Notes Modal */}
+      {selectedDocumentForNotes && (
+        <DocumentNotes
+          documentId={selectedDocumentForNotes._id}
+          userId={localStorage.getItem('userId')}
+          userType="user"
+          isVisible={showNotesModal}
+          onClose={handleCloseNotes}
+        />
+      )}
     </div>
   );
 };
