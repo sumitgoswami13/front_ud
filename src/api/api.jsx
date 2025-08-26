@@ -7,11 +7,12 @@ const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:5000
 /* -------------------------------------------
    Auth header helpers
 -------------------------------------------- */
-const getAccessToken = () => localStorage.getItem("accessToken") || "";
-const setAccessToken = (t) => t && localStorage.setItem("accessToken", t);
-const setRefreshToken = (t) => t && localStorage.setItem("refreshToken", t);
-const getAuthHeaders = () => {
-  const token = getAccessToken();
+import secureStore from "../utils/secureStorage";
+const getAccessToken = async () => (await secureStore.getItem("accessToken")) || "";
+const setAccessToken = async (t) => t && (await secureStore.setItem("accessToken", t));
+const setRefreshToken = async (t) => t && (await secureStore.setItem("refreshToken", t));
+const getAuthHeaders = async () => {
+  const token = await getAccessToken();
   return token ? { Authorization: `Bearer ${token}` } : {};
 };
 
@@ -20,10 +21,11 @@ const getAuthHeaders = () => {
 -------------------------------------------- */
 const apiRequest = async (endpoint, options = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
+  const authHeaders = await getAuthHeaders();
   const config = {
     headers: {
       "Content-Type": "application/json",
-      ...getAuthHeaders(),
+      ...authHeaders,
       ...(options.headers || {}),
     },
     ...options,
@@ -44,10 +46,11 @@ const apiRequest = async (endpoint, options = {}) => {
 const apiFormRequest = async (endpoint, formData, method = "POST") => {
   const url = `${API_BASE_URL}${endpoint}`;
   try {
+    const authHeaders = await getAuthHeaders();
     const res = await fetch(url, {
       method,
       headers: {
-        ...getAuthHeaders(),
+        ...authHeaders,
       },
       body: formData,
     });
@@ -87,8 +90,8 @@ export const loginUser = async (email, password) => {
   // Persist tokens if backend returns them
   const at = res?.data?.accessToken || res?.accessToken;
   const rt = res?.data?.refreshToken || res?.refreshToken;
-  if (at) setAccessToken(at);
-  if (rt) setRefreshToken(rt);
+  if (at) await setAccessToken(at);
+  if (rt) await setRefreshToken(rt);
   return res;
 };
 

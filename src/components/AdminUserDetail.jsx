@@ -6,6 +6,7 @@ import {
   uploadSignedDocument
 } from '../api/api';
 import DocumentNotes from './DocumentNotes';
+import secureStore from '../utils/secureStorage';
 
 const AdminUserDetail = ({ userId, onBack, onLogout }) => {
   const [documents, setDocuments] = useState([]);
@@ -25,12 +26,11 @@ const AdminUserDetail = ({ userId, onBack, onLogout }) => {
   const [selectedDocumentForNotes, setSelectedDocumentForNotes] = useState(null);
 
   useEffect(() => {
-    const storedAdminData = localStorage.getItem('adminData');
-    if (storedAdminData) {
-      setAdminData(JSON.parse(storedAdminData));
-    }
-    
-    fetchUserData();
+    (async () => {
+      const storedAdminData = await secureStore.getJSON('adminData');
+      if (storedAdminData) setAdminData(storedAdminData);
+      fetchUserData();
+    })();
   }, [userId]);
 
   const fetchUserData = async () => {
@@ -65,9 +65,6 @@ const AdminUserDetail = ({ userId, onBack, onLogout }) => {
   };
 
   const handleLogout = () => {
-    localStorage.removeItem('adminData');
-    localStorage.removeItem('isAdmin');
-    localStorage.clear();
     onLogout?.();
   };
 

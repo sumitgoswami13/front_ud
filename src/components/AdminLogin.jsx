@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { loginUser } from '../api/api';
+import secureStore from '../utils/secureStorage';
 
 const AdminLogin = ({ onBack, onLoginSuccess }) => {
   const [formData, setFormData] = useState({
@@ -60,7 +61,8 @@ const AdminLogin = ({ onBack, onLoginSuccess }) => {
         console.log('Login response:', response.data);
         if (response.data?.type == 'admin' || response.data?.user?.type === 'admin') {
           // Store admin data
-          localStorage.setItem('adminData', JSON.stringify(response.data));
+          await secureStore.setJSON('adminData', response.data);
+          await secureStore.setItem('isAdmin', 'true');
           localStorage.setItem('isAdmin', 'true');
           onLoginSuccess?.();
         } else {

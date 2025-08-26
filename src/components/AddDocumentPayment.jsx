@@ -4,6 +4,7 @@ import {
   createTransaction,
   updateTransactionPayment,
 } from "../api/api.jsx";
+import secureStore from "../utils/secureStorage";
 
 const LOCAL_USER_KEY = "udin:user";
 
@@ -29,38 +30,33 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
   }, []);
 
   useEffect(() => {
-    console.log("AddDocumentPayment: useEffect triggered", { files });
-    setIsLoading(true);
-    try {
-      if (files && files.length > 0) {
-        console.log("AddDocumentPayment: Processing files for calculation", files);
-        const calc = calculateTotal(files);
-        console.log("AddDocumentPayment: Calculation result", calc);
-        setCalculation(calc);
-      } else {
-        console.log("AddDocumentPayment: No files provided", { files });
+    (async () => {
+      console.log("AddDocumentPayment: useEffect triggered", { files });
+      setIsLoading(true);
+      try {
+        if (files && files.length > 0) {
+          console.log("AddDocumentPayment: Processing files for calculation", files);
+          const calc = calculateTotal(files);
+          console.log("AddDocumentPayment: Calculation result", calc);
+          setCalculation(calc);
+        } else {
+          console.log("AddDocumentPayment: No files provided", { files });
+        }
+
+        // Try multiple user storage keys
+        const user = (await secureStore.getJSON(LOCAL_USER_KEY)) || (await secureStore.getJSON('userData'));
+        if (user) {
+          console.log("AddDocumentPayment: User found in storage", user);
+          setLocalUser(user);
+        } else {
+          console.log("AddDocumentPayment: No user found in storage");
+        }
+      } catch (e) {
+        console.error("Error processing payment data:", e);
+      } finally {
+        setIsLoading(false);
       }
-      
-      // Try multiple user storage keys
-      let raw = localStorage.getItem(LOCAL_USER_KEY);
-      if (!raw) {
-        raw = localStorage.getItem('userData');
-      }
-      
-      if (raw) {
-        const user = JSON.parse(raw);
-        console.log("AddDocumentPayment: User found in localStorage", user);
-        setLocalUser(user);
-      } else {
-        console.log("AddDocumentPayment: No user found in localStorage");
-        // Log all localStorage keys for debugging
-        console.log("All localStorage keys:", Object.keys(localStorage));
-      }
-    } catch (e) {
-      console.error("Error processing payment data:", e);
-    } finally {
-      setIsLoading(false);
-    }
+    })();
   }, [files]);
 
   const getUserId = () => localUser?.id || localStorage.getItem('userId') || null;
