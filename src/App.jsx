@@ -280,6 +280,13 @@ function AppShell() {
             }
           />
 
+          {/* Policy Pages */}
+          <Route path="/terms" element={<TermsConditions />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/pricing-policy" element={<PricingPolicy />} />
+          <Route path="/delivery-policy" element={<DeliveryPolicy />} />
+          <Route path="/cancellation-refund" element={<CancellationRefundPolicy />} />
+
           {/* Dev helpers */}
           {import.meta.env.DEV && (
             <>
