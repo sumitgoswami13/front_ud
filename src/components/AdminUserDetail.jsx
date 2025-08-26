@@ -6,6 +6,7 @@ import {
   uploadSignedDocument
 } from '../api/api';
 import DocumentNotes from './DocumentNotes';
+import secureStore from '../utils/secureStorage';
 
 const AdminUserDetail = ({ userId, onBack, onLogout }) => {
   const [documents, setDocuments] = useState([]);
