@@ -9,7 +9,7 @@ const LOCAL_USER_KEY = "udin:user";
 
 const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
   console.log("AddDocumentPayment: Component mounted with props", { files, onBack, onPaymentSuccess });
-
+  
   const [calculation, setCalculation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -40,13 +40,13 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
       } else {
         console.log("AddDocumentPayment: No files provided", { files });
       }
-
+      
       // Try multiple user storage keys
       let raw = localStorage.getItem(LOCAL_USER_KEY);
       if (!raw) {
         raw = localStorage.getItem('userData');
       }
-
+      
       if (raw) {
         const user = JSON.parse(raw);
         console.log("AddDocumentPayment: User found in localStorage", user);
@@ -99,7 +99,7 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
         return;
       }
     }
-
+    
     if (!window.Razorpay) {
       alert("Payment system not available. Please refresh and try again.");
       return;
@@ -258,8 +258,8 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] overflow-hidden">
-        <div className="bg-gradient-to-r from-purple-600 to-purple-700 px-8 py-6 text-center">
+      <div className="bg-white rounded-2xl shadow-xl max-w-2xl w-full max-h-[90vh] flex flex-col">
+        <div className="bg-gradient-to-r from-purple-600 to-purple-700 px-8 py-6 text-center flex-shrink-0">
           <div className="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
             <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1" />
@@ -269,7 +269,7 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
           <p className="text-purple-100 text-sm mt-2">Additional Documents</p>
         </div>
 
-        <div className="p-8 max-h-[calc(90vh-200px)] overflow-y-auto">
+        <div className="p-8 flex-1 overflow-y-auto min-h-0">
           {/* Items */}
           <div className="mb-8">
             <div className="flex justify-between items-center mb-4">
@@ -342,18 +342,8 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
           )}
         </div>
 
-        {/* Debug Info */}
-        <div className="p-4 bg-yellow-50 border-t border-yellow-200 text-xs">
-          <div>Debug Info:</div>
-          <div>razorpayLoaded: {razorpayLoaded.toString()}</div>
-          <div>isProcessingPayment: {isProcessingPayment.toString()}</div>
-          <div>calculation: {calculation ? 'exists' : 'null'}</div>
-          <div>files count: {files ? files.length : 0}</div>
-          <div>Razorpay available: {typeof window.Razorpay !== 'undefined' ? 'yes' : 'no'}</div>
-        </div>
-
         {/* Actions */}
-        <div className="flex space-x-4 p-6 border-t bg-gray-50">
+        <div className="flex space-x-4 p-6 border-t bg-gray-50 flex-shrink-0">
           <button
             onClick={onBack}
             disabled={isProcessingPayment}
@@ -363,9 +353,9 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
           </button>
           <button
             onClick={handlePayment}
-            disabled={isProcessingPayment}
+            disabled={isProcessingPayment || !razorpayLoaded}
             className={`flex-1 px-6 py-3 rounded-lg font-medium transition-all duration-200 ${
-              isProcessingPayment
+              isProcessingPayment || !razorpayLoaded
                 ? "bg-gray-400 cursor-not-allowed"
                 : "bg-gradient-to-r from-purple-600 to-purple-700 hover:from-purple-700 hover:to-purple-800 transform hover:scale-105 shadow-lg"
             } text-white`}
@@ -378,7 +368,7 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
             ) : !razorpayLoaded ? (
               <span className="flex items-center justify-center space-x-2">
                 <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                <span>Loading Razorpay... (Click anyway to test)</span>
+                <span>Loading Razorpay...</span>
               </span>
             ) : (
               <span className="flex items-center justify-center space-x-2">
