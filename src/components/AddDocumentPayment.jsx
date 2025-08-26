@@ -8,6 +8,8 @@ import {
 const LOCAL_USER_KEY = "udin:user";
 
 const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
+  console.log("AddDocumentPayment: Component mounted with props", { files, onBack, onPaymentSuccess });
+
   const [calculation, setCalculation] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isProcessingPayment, setIsProcessingPayment] = useState(false);
@@ -39,13 +41,20 @@ const AddDocumentPayment = ({ files, onBack, onPaymentSuccess }) => {
         console.log("AddDocumentPayment: No files provided", { files });
       }
 
-      const raw = localStorage.getItem(LOCAL_USER_KEY);
+      // Try multiple user storage keys
+      let raw = localStorage.getItem(LOCAL_USER_KEY);
+      if (!raw) {
+        raw = localStorage.getItem('userData');
+      }
+
       if (raw) {
         const user = JSON.parse(raw);
         console.log("AddDocumentPayment: User found in localStorage", user);
         setLocalUser(user);
       } else {
         console.log("AddDocumentPayment: No user found in localStorage");
+        // Log all localStorage keys for debugging
+        console.log("All localStorage keys:", Object.keys(localStorage));
       }
     } catch (e) {
       console.error("Error processing payment data:", e);
