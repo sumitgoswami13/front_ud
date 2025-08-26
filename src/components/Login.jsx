@@ -37,9 +37,10 @@ const Login = ({ onBack, onLoginSuccess }) => {
       const response = await loginUser(formData.email, formData.password);
 
       if (response.success && response.data) {
-        // Save user data to localStorage
         const userData = response.data;
-        localStorage.setItem('userData', JSON.stringify(userData));
+        await secureStore.setJSON('userData', userData);
+        await secureStore.setJSON('udin:user', userData);
+        // Keep legacy scalar keys for compatibility with parts of the UI
         localStorage.setItem('userId', userData.id);
         localStorage.setItem('userEmail', userData.email);
         localStorage.setItem('firstName', userData.firstName);
@@ -48,12 +49,9 @@ const Login = ({ onBack, onLoginSuccess }) => {
         localStorage.setItem('address', userData.address);
         localStorage.setItem('state', userData.state);
         localStorage.setItem('pinCode', userData.pinCode);
-        localStorage.setItem('usedTempPassword', userData.usedTempPassword.toString());
+        localStorage.setItem('usedTempPassword', String(userData.usedTempPassword));
 
-        // Tokens are already saved by the loginUser function
-        console.log('User logged in:', userData);
-
-        // Call the success callback to redirect to dashboard
+        // Tokens are saved by loginUser via secure storage
         if (onLoginSuccess) {
           onLoginSuccess();
         }
