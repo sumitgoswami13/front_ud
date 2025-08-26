@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { getDocumentsByUser, getTransactionsByUser, deleteDocument } from '../api/api';
 import AddDocumentModal from './AddDocumentModal';
+import secureStore from '../utils/secureStorage';
 import AddDocumentPayment from './AddDocumentPayment';
 import AddDocumentProgress from './AddDocumentProgress';
 import DocumentNotes from './DocumentNotes';
@@ -14,6 +15,7 @@ const Dashboard = ({ onLogout, onBack }) => {
   const [error, setError] = useState('');
   const [userData, setUserData] = useState(null);
   const [showDeleteModal, setShowDeleteModal] = useState(null);
+  const [userId, setUserId] = useState(null);
 
   // Add Document flow state
   const [showAddDocumentModal, setShowAddDocumentModal] = useState(false);
@@ -26,21 +28,18 @@ const Dashboard = ({ onLogout, onBack }) => {
   const [selectedDocumentForNotes, setSelectedDocumentForNotes] = useState(null);
 
   useEffect(() => {
-    // Get user data from localStorage
-    const storedUserData = localStorage.getItem('userData');
-    const userId = localStorage.getItem('userId');
-    
-    if (storedUserData) {
-      setUserData(JSON.parse(storedUserData));
-    }
-
-    // Fetch user data
-    if (userId) {
-      fetchData(userId);
-    } else {
-      setError('User not found. Please log in again.');
-      setIsLoading(false);
-    }
+    (async () => {
+      const storedUser = await secureStore.getJSON('userData');
+      if (storedUser) setUserData(storedUser);
+      const uid = storedUser?.id || localStorage.getItem('userId');
+      if (uid) {
+        setUserId(uid);
+        fetchData(uid);
+      } else {
+        setError('User not found. Please log in again.');
+        setIsLoading(false);
+      }
+    })();
   }, []);
 
   const fetchData = async (userId) => {
@@ -94,8 +93,6 @@ const Dashboard = ({ onLogout, onBack }) => {
   };
 
   const handleLogout = () => {
-    // Clear localStorage
-    localStorage.clear();
     onLogout?.();
   };
 
@@ -179,7 +176,6 @@ const Dashboard = ({ onLogout, onBack }) => {
   };
 
   const handleRefresh = () => {
-    const userId = localStorage.getItem('userId');
     if (userId) {
       fetchData(userId);
     }
@@ -221,7 +217,6 @@ const Dashboard = ({ onLogout, onBack }) => {
     setAddDocumentTransactionId(null);
     setAddDocumentPaymentId(null);
     // Refresh data to show new documents
-    const userId = localStorage.getItem('userId');
     if (userId) {
       fetchData(userId);
     }
@@ -758,7 +753,7 @@ const Dashboard = ({ onLogout, onBack }) => {
       {selectedDocumentForNotes && (
         <DocumentNotes
           documentId={selectedDocumentForNotes._id}
-          userId={localStorage.getItem('userId')}
+          userId={userId}
           userType="user"
           isVisible={showNotesModal}
           onClose={handleCloseNotes}
