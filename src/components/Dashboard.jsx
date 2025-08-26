@@ -704,11 +704,13 @@ const Dashboard = ({ onLogout, onBack }) => {
         onContinue={handleAddDocumentContinue}
       />
 
-      <AddDocumentPayment
-        files={addDocumentFiles}
-        onBack={handleAddDocumentPaymentBack}
-        onPaymentSuccess={handleAddDocumentPaymentSuccess}
-      />
+      {showAddDocumentPayment && (
+        <AddDocumentPayment
+          files={addDocumentFiles}
+          onBack={handleAddDocumentPaymentBack}
+          onPaymentSuccess={handleAddDocumentPaymentSuccess}
+        />
+      )}
 
       <AddDocumentProgress
         isOpen={showAddDocumentProgress}
