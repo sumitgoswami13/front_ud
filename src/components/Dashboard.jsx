@@ -1,5 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { getDocumentsByUser, getTransactionsByUser, deleteDocument } from '../api/api';
+import AddDocumentModal from './AddDocumentModal';
+import AddDocumentPayment from './AddDocumentPayment';
+import AddDocumentProgress from './AddDocumentProgress';
 
 const Dashboard = ({ onLogout, onBack }) => {
   const [documents, setDocuments] = useState([]);
