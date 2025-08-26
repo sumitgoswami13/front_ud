@@ -352,8 +352,19 @@ const Dashboard = ({ onLogout, onBack }) => {
             <div className="p-6 border-b">
               <div className="flex items-center justify-between">
                 <h2 className="text-xl font-semibold text-gray-900">My Documents</h2>
-                <div className="flex items-center space-x-2 text-sm text-gray-600">
-                  <span>Total: {documents.length}</span>
+                <div className="flex items-center space-x-4">
+                  <div className="flex items-center space-x-2 text-sm text-gray-600">
+                    <span>Total: {documents.length}</span>
+                  </div>
+                  <button
+                    onClick={handleAddDocumentClick}
+                    className="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 text-sm font-medium flex items-center space-x-2 transition-colors"
+                  >
+                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4v16m8-8H4" />
+                    </svg>
+                    <span>Add Document</span>
+                  </button>
                 </div>
               </div>
             </div>
